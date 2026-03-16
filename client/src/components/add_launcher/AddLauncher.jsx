@@ -34,8 +34,6 @@ function AddLauncher() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            // firstName: 'Fred',
-            // lastName: 'Flintstone'
             body: JSON.stringify({ name, rocketType, latitude, longitude, city })
         })
         const getResponse = await res.json()
