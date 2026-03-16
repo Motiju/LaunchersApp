@@ -1,10 +1,25 @@
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import HomePage from './pages/home_page/HomePage';
+import AddLauncherPage from './pages/add_launcher_page/AddLauncherPage';
+
 import './App.css'
 
 function App() {
 
   return (
     <div>
-      <p>hello</p>
+      <BrowserRouter>
+        <nav>
+          <Link to="/">Home</Link> |{" "}
+          <Link to="/add_Launcher_Page">add Launcher</Link> |{" "}
+          <Link to="/Launcher_Details_Page">Launcher Details</Link>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<HomePage />} /> 
+          <Route path="/add_Launcher_Page" element={<AddLauncherPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }
