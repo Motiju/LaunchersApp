@@ -1,5 +1,6 @@
 import { Router } from "express";
 import mongoose from "mongoose";
+import { isInputNotEmpty } from "../middelware/is_input_not_empty.middelware.js";
 
 const apiLaunchersRoute = Router();
 
@@ -22,7 +23,7 @@ apiLaunchersRoute.get("/", async (req, res) => {
     }
 })
 
-apiLaunchersRoute.post("/", async (req, res) => {
+apiLaunchersRoute.post("/", isInputNotEmpty, async (req, res) => {
     try {
         const { name, rocketType, latitude, longitude, city } = req.body
         // console.log(name, rocketType, latitude, longitude, city);

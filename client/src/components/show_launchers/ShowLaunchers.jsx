@@ -8,7 +8,7 @@ function ShowLaunchers() {
     const res = await fetch("http://localhost:3000/api/launchers")
     const getResponse = await res.json()
     console.log(getResponse)
-    setAllLaunchers(getResponse.message)
+    setAllLaunchers(Array.isArray(getResponse.message) ? getResponse.message : [])
   }
 
   useEffect(() => {
@@ -16,16 +16,16 @@ function ShowLaunchers() {
   }, [])
 
   console.log(allLaunchers);
-  
+
 
   return (
     <div>
-      {allLaunchers?.map((launchers)=>
-        (
-          <p key={launchers._id}>{launchers.name}</p>
-        )
+      {allLaunchers.map((launchers) =>
+      (
+        <p key={launchers._id}>{launchers.name}</p>
+      )
 
-        
+
       )}
       {/* <table>
         <tr>
