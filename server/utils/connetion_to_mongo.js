@@ -17,4 +17,4 @@ async function connectionToMongo() {
     Launcher = mongoose.model('launcher', launcherSchema);
 }
 
-export {connection, launcherSchema,Launcher, connectionToMongo}
+export { connection, launcherSchema, Launcher, connectionToMongo }

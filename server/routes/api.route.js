@@ -1,42 +1,39 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import { isInputNotEmpty } from "../middelware/is_input_not_empty.middelware.js";
+import { Launcher } from "../utils/connetion_to_mongo.js";
 
 const apiLaunchersRoute = Router();
 
 apiLaunchersRoute.get("/", async (req, res) => {
     try {
-        await mongoose.connect("mongodb://moti:1234@ac-tlkq4av-shard-00-00.kvweiys.mongodb.net:27017,ac-tlkq4av-shard-00-01.kvweiys.mongodb.net:27017,ac-tlkq4av-shard-00-02.kvweiys.mongodb.net:27017/?ssl=true&replicaSet=atlas-zzlaxa-shard-0&authSource=admin&appName=Cluster0");
-        const launcherSchema = new mongoose.Schema({
-            city: String,
-            rocketType: String,
-            latitude: Number,
-            longitude: Number,
-            name: String
-        });
-        const Launcher = mongoose.model('launcher', launcherSchema);
         const allLauncher = await Launcher.find();
-        console.log(allLauncher);
         res.json({ message: allLauncher })
     } catch (error) {
         res.json({ error: error })
     }
 })
 
+apiLaunchersRoute.get("/:id", async (req, res) => {
+    try {
+        try {
+            const launcherDetails = await Launcher.find({ _id: `${req.params.id}` });
+            console.log(launcherDetails);
+            if (launcherDetails) {
+                return res.json({ message: launcherDetails })
+            }
+        } catch (error) {
+            return res.json({ message: "this id didn't exsist" })
+        }
+    } catch (error) {
+        res.json({ error: `the problem is in get by id:  ${error}` })
+    }
+})
+
 apiLaunchersRoute.post("/", isInputNotEmpty, async (req, res) => {
     try {
         const { name, rocketType, latitude, longitude, city } = req.body
-        // console.log(name, rocketType, latitude, longitude, city);
-        async function connectionToMongo() {
-            await mongoose.connect("mongodb://moti:1234@ac-tlkq4av-shard-00-00.kvweiys.mongodb.net:27017,ac-tlkq4av-shard-00-01.kvweiys.mongodb.net:27017,ac-tlkq4av-shard-00-02.kvweiys.mongodb.net:27017/?ssl=true&replicaSet=atlas-zzlaxa-shard-0&authSource=admin&appName=Cluster0");
-            const launcherSchema = new mongoose.Schema({
-                city: String,
-                rocketType: String,
-                latitude: Number,
-                longitude: Number,
-                name: String
-            });
-            const Launcher = mongoose.model('launcher', launcherSchema);
+        async function addToMongo() {
             const addLauncher = new Launcher({
                 city: city,
                 rocketType: rocketType,
@@ -46,10 +43,36 @@ apiLaunchersRoute.post("/", isInputNotEmpty, async (req, res) => {
             });
             await addLauncher.save();
         }
-        connectionToMongo()
+        addToMongo()
         res.json({ message: "the launcher added succsefully" })
     } catch (error) {
         res.json({ error: `the problem is in the server in post: ${error}` })
+    }
+})
+
+apiLaunchersRoute.delete("/:id", async (req, res) => {
+    try {
+        try {
+            await Launcher.deleteOne({ _id: `${req.params.id}` });
+            res.json({ message: "the id delted succsfully" })
+        } catch (error) {
+            return res.json({ message: "this id didn't exsist" })
+        }
+    } catch (error) {
+        res.json({ error: `the problem is in delete by id:  ${error}` })
+    }
+})
+
+apiLaunchersRoute.put("/id", async (req, res) => {
+    try {
+        try {
+            await Launcher.updateOne({ _id: `${req.params.id}` });
+            res.json({ message: "the id update succsfully" })
+        } catch (error) {
+            return res.json({ message: "this id didn't exsist" })
+        }
+    } catch (error) {
+        res.json({ error: `the problem is in delete by id:  ${error}` })
     }
 })
 
